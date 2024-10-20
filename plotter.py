@@ -34,7 +34,7 @@ def load_data(graph_type=None, n_range=None, k_range=None, q_range=None, perl_ve
 
                     # Filtrar según los parámetros proporcionados, ignorando los que sean None
                     if (graph_type is None or graph_type == graph_type_curr) and \
-                            (n_range is None or (n_curr is not None and n_range[0] <= n_curr <= n_range[1] and n_curr%5 == 0)) and \
+                            (n_range is None or (n_curr is not None and n_range[0] <= n_curr <= n_range[1])) and \
                             (k_range is None or (k_curr is not None and k_range[0] <= k_curr <= k_range[1])) and \
                             (q_range is None or (q_curr is not None and q_range[0] <= q_curr <= q_range[1])) and \
                             (perl_vertex is None or (perl_vertex_curr is not None and perl_vertex == perl_vertex_curr)):
