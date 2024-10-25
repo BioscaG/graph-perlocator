@@ -5,11 +5,11 @@ import numpy as np
 import multiprocessing
 import pandas as pd
 from datetime import datetime
-import itertools
+import itertools	
 from pathlib import Path
 import configparser
 
-AVG_FRIENDS = 5 # Nombre mitjà de amics en un grup
+AVG_FRIENDS = 5
 
 def percolate_graph(G, p, perl_vertex=True):
     H = G.copy()
@@ -39,6 +39,8 @@ def evaluate(G, k, q, perl_vertex=True):
         connected_fractions = pool.starmap(calculate_mitj, args_list)
     return connected_fractions
 
+def average_cc(vectors):
+    return np.mean(vectors, axis=0)
 
 def plot_and_save(mediaandprob, graph_type, n, k, q, perl_vertex, show_plot=True):
     media, prob = zip(*mediaandprob)
@@ -127,9 +129,14 @@ def generate_percolate_save(graph_type, n, k, q, perl_vertex,show_plot=True):
         mediaandprob = evaluate(G, k, q, perl_vertex)
 
     elif graph_type == 'rgg':
-        radius = np.sqrt(np.log(n) / (np.pi * n)) #radi threshold per a la connexitud del RGG, si no surt connex es torna a generar
-        G = generate_connected_rgg(n, radius)
-        mediaandprob = evaluate(G, k, q, perl_vertex=False)
+        radius = np.sqrt(np.log(n) / (np.pi * n))
+        means_and_probs = []
+        for _ in range(100):
+            G = generate_connected_rgg(n, radius) 
+            m_i_p_de_G = evaluate(G, k, q, perl_vertex=False) 
+            means_and_probs.append(m_i_p_de_G)
+            break
+        mediaandprob = average_cc(means_and_probs) 
     
     elif graph_type == 'ccg':
         G = generate_connected_caveman_graph(n, AVG_FRIENDS)
